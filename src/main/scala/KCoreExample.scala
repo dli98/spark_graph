@@ -16,9 +16,20 @@ object KCoreExample {
 
     val friendsGraph = GraphLoader.edgeListFile(sc, "data/followers.txt")
 
-    val kmax = friendsGraph.degrees.reduce(max)
-    val kGraph = KCore.run(friendsGraph, kmax = kmax._2)
+    val degreeMax = friendsGraph.degrees.reduce(max)._2
+    println(s"max degree: $degreeMax")
+    // get all vertices coreness
+    var kGraph = KCore.run(friendsGraph)
+    val kmax: Int = kGraph.vertices.reduce(max)._2
+    println(s"max kcore ${kmax}")
 
+    // get kCore vertices
+    val subGraph = kGraph.subgraph(vpred = (vid, k) => k >= kmax)
+    println(s"v1 $kmax-core 中包含的顶点")
+    subGraph.vertices.foreach(println)
+
+    kGraph = KCoreV2.computeCurrentKCore(friendsGraph, k = kmax)
+    println(s"v2 vesion $kmax-core 中包含的顶点")
     kGraph.vertices.foreach(println)
   }
 

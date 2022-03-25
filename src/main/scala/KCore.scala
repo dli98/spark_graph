@@ -7,7 +7,7 @@ import scala.reflect.ClassTag
 
 object KCore extends Logging {
 
-  def run[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED], kmax: Int, kmin: Int = 1): Graph[Int, ED] = {
+  def run[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED], kmax: Int = Int.MaxValue, kmin: Int = 1): Graph[Int, ED] = {
 
     // Graph[(Int, Boolean), ED] - boolean indicates whether it is active or not
     var g = graph.outerJoinVertices(graph.degrees)((vid, oldData, newData) => (newData.getOrElse(0), true)).cache
