@@ -20,17 +20,18 @@ object KCoreV2 extends Logging {
     var isConverged = false
     var i = 0
 
+    // todo：查看spark ui 整体耗时每次单调递增, 每次的task数目都递增，每次增量在哪里发生的？
     while (!isConverged) {
       // 获取 g 中 degree 大于 k 的子图
       val subGraph = g.subgraph(vpred = (vid, degree) => degree >= k).cache()
 
       g = subGraph.outerJoinVertices(subGraph.degrees) { (vid, vd, degree) => degree.getOrElse(0) }.cache()
 
-      // 迭代直到图稳定
+      // 当前顶点数和上次迭代前的顶点数相等，证明图稳定
       thisVerticesNum = g.numVertices
       if (lastVerticesNum == thisVerticesNum) {
         isConverged = true
-        logWarning("thisVerticesNum num is " + thisVerticesNum + ", iteration is " + i + ", compute k-core for " + k)
+        logWarning("thisVerticesNum num is " + thisVerticesNum + ", iteration is " + i + ", k-core >= " + k)
       } else {
         logWarning("lastVerticesNum is " + lastVerticesNum + ", thisVerticesNum is " + thisVerticesNum + ", iteration is " + i + ", not converge")
         lastVerticesNum = thisVerticesNum
