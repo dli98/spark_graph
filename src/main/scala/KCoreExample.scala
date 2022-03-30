@@ -19,18 +19,22 @@ object KCoreExample {
     val degreeMax = friendsGraph.degrees.reduce(max)._2
     println(s"max degree: $degreeMax")
     // get all vertices coreness
-    var kGraph = KCore.run(friendsGraph)
+    val kGraph = KCore.run(friendsGraph)
     val kmax: Int = kGraph.vertices.reduce(max)._2
     println(s"max kcore ${kmax}")
 
-    // get kCore vertices
-    val subGraph = kGraph.subgraph(vpred = (vid, k) => k >= kmax)
     println(s"v1 $kmax-core 中包含的顶点")
-    subGraph.vertices.foreach(println)
+    // 正确结果 [('7', 3), ('6', 3), ('3', 3), ('2', 2), ('1', 2), ('4', 1), ('15', 1), ('14', 1), ('13', 1), ('12', 1), ('11', 1)]
+    kGraph.vertices.collect().sortBy(_._2).reverse.foreach(println)
 
-    kGraph = KCoreV2.computeCurrentKCore(friendsGraph, k = kmax)
-    println(s"v2 vesion $kmax-core 中包含的顶点")
-    kGraph.vertices.foreach(println)
+    println(s"kCore fast")
+    KCoreFast.run(friendsGraph, kmax=kmax).vertices
+      .filter(_._2 >= kmax)
+      .foreach(println(_))
+
+    println(s"outerJoinVertices version")
+    KCoreV2.computeCurrentKCore(friendsGraph, k = kmax)
+      .vertices.foreach(println)
   }
 
   // Define a reduce operation to compute the highest degree vertex

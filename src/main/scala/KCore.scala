@@ -1,8 +1,8 @@
+// https://github.com/ankurdave/spark/blob/vldb/graphx/src/main/scala/org/apache/spark/graphx/lib/KCore.scala
 
 import org.apache.spark.graphx._
 import org.apache.spark.internal.Logging
 
-import scala.math._
 import scala.reflect.ClassTag
 
 object KCore extends Logging {
@@ -14,13 +14,12 @@ object KCore extends Logging {
     var curK = kmin
     var vCount: Long = 1
     while (curK <= kmax && vCount > 0) {
-      g = time {
-        computeCurrentKCore(g, curK).cache
-      }
+      g = computeCurrentKCore(g, curK).cache
       vCount = g.vertices.filter { case (vid, (vd, _)) => vd >= curK }.count()
       //      val eCount = g.triplets.filter { t => t.srcAttr._1 >= curK && t.dstAttr._1 >= curK }.count()
       //      println(s"K=$curK, V=$vCount, E=$eCount")
-      logWarning(s"K=$curK, V=$vCount")
+      //      g.vertices.foreach(println(_))
+      println(s"K=$curK, V=$vCount")
       curK += 1
     }
     g.mapVertices({ case (_, (k, _)) => k })
@@ -66,8 +65,13 @@ object KCore extends Logging {
       var newCount = data._1
       var on = data._2
       if (on) {
-        newCount = max(k - 1, data._1 - update._1)
         on = update._2
+        newCount = data._1 - update._1
+        // newCount 小于0 证明 vid 已经没有边相连了
+        if (newCount <= 0) {
+          on = false
+          newCount = k - 1
+        }
       }
       (newCount, on)
     }
