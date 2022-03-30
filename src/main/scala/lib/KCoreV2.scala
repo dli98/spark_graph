@@ -1,3 +1,5 @@
+package lib
+
 import org.apache.spark.graphx.Graph
 import org.apache.spark.internal.Logging
 

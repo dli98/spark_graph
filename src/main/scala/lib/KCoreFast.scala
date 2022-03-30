@@ -1,8 +1,9 @@
-// https://github.com/ankurdave/spark/tree/vldb/graphx/src/main/scala/org/apache/spark/graphx/lib
-import org.apache.spark.graphx._
+package lib
+
+import org.apache.spark.graphx.{EdgeTriplet, Graph, Pregel, VertexId}
 import org.apache.spark.internal.Logging
 
-import scala.math._
+import scala.math.max
 import scala.reflect.ClassTag
 
 object KCoreFast extends Logging {

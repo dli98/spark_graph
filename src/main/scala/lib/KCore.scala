@@ -1,6 +1,6 @@
-// https://github.com/ankurdave/spark/blob/vldb/graphx/src/main/scala/org/apache/spark/graphx/lib/KCore.scala
+package lib
 
-import org.apache.spark.graphx._
+import org.apache.spark.graphx.{EdgeTriplet, Graph, Pregel, VertexId}
 import org.apache.spark.internal.Logging
 
 import scala.reflect.ClassTag

@@ -1,4 +1,5 @@
 
+import lib.{KCore, KCoreFast, KCoreV2}
 import org.apache.spark.graphx.{GraphLoader, VertexId}
 import org.apache.spark.sql.SparkSession
 
@@ -28,7 +29,7 @@ object KCoreExample {
     kGraph.vertices.collect().sortBy(_._2).reverse.foreach(println)
 
     println(s"kCore fast")
-    KCoreFast.run(friendsGraph, kmax=kmax).vertices
+    KCoreFast.run(friendsGraph, kmax = kmax).vertices
       .filter(_._2 >= kmax)
       .foreach(println(_))
 
