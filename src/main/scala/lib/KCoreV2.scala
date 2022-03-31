@@ -42,13 +42,4 @@ object KCoreV2 extends Logging {
     }
     g
   }
-
-  //  def getCoreness[VD: ClassTag, ED: ClassTag]
-  //  (graph: Graph[VD, ED],
-  //   kmax: Int,
-  //   kmin: Int = 1,
-  //   maxIterations: Int = Int.MaxValue)
-  //  : Graph[Int, ED] = {
-  //    graph
-  //  }
 }
