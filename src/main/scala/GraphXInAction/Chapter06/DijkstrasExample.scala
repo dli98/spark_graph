@@ -1,6 +1,6 @@
 package GraphXInAction.Chapter06
 
-import lib.Dijkstras
+import lib.{Dijkstras, DijkstrasTrace}
 import org.apache.spark.SparkContext
 import org.apache.spark.graphx.{Edge, Graph}
 import utils.SparkUtils
@@ -19,6 +19,8 @@ object DijkstrasExample {
     val myGraph = Graph(myVertices, myEdges)
 
     Dijkstras.run(myGraph, 1L).vertices.map(_._2).collect.foreach(println(_))
+    println("------------------")
+    DijkstrasTrace.run(myGraph, 1L).vertices.map(_._2).collect.foreach(println(_))
 
   }
 
