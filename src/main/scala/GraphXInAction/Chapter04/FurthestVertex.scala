@@ -3,6 +3,8 @@ package GraphXInAction.Chapter04
 import org.apache.spark.graphx.{Edge, Graph}
 import utils.SparkUtils
 
+import scala.annotation.tailrec
+
 object FurthestVertex {
   def main(args: Array[String]): Unit = {
     val sc = SparkUtils.getSpark.sparkContext
@@ -28,6 +30,7 @@ object FurthestVertex {
   }
 
 
+  @tailrec
   def propagateEdgeCount(g: Graph[Int, String]): Graph[Int, String] = {
     val vertices = g.aggregateMessages[Int](triplet => triplet.sendToDst(triplet.srcAttr + 1), math.max)
     val g2 = Graph(vertices, g.edges)
