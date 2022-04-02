@@ -9,7 +9,7 @@ object Dijkstras extends Serializable {
   def run[VD: ClassTag](graph: Graph[VD, Double], origin: VertexId): Graph[(VD, Double), Double] = {
 
     // 初始化
-    var g = graph.mapVertices((vid, _) => (false, if (vid == origin) 0 else Double.MaxValue))
+    var g = graph.mapVertices((vid, _) => (false, if (vid == origin) 0 else Double.PositiveInfinity))
 
     // 遍历所有顶点
     (0L until g.vertices.count).foreach(i => {
@@ -27,12 +27,12 @@ object Dijkstras extends Serializable {
 
       // 将 currentVertexId 遍历状态设为 true, 表示已遍历, 并更新节点的最短路径
       g = g.outerJoinVertices(newDistances)((vid, oldData, newSum) => {
-        (oldData._1 || vid == currentVertexId, math.min(oldData._2, newSum.getOrElse(Double.MaxValue)))
+        (oldData._1 || vid == currentVertexId, math.min(oldData._2, newSum.getOrElse(Double.PositiveInfinity)))
       })
     })
 
     graph.outerJoinVertices(g.vertices)((vid, vd, dist) =>
-      (vd, dist.getOrElse((false, Double.MaxValue))._2))
+      (vd, dist.getOrElse((false, Double.PositiveInfinity))._2))
   }
 
   def pregelRun[VD: ClassTag](graph: Graph[VD, Double], origin: VertexId): Graph[(VD, Double), Double] = {

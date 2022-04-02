@@ -5,9 +5,10 @@ import org.apache.spark.graphx.{EdgeDirection, Graph, VertexId}
 import scala.reflect.ClassTag
 
 object DijkstrasTrace {
+  // 用于计算一个节点到其他节点的最短路径。
 
   def run[VD: ClassTag](graph: Graph[VD, Double], origin: VertexId): Graph[(VD, Double, List[VertexId]), Double] = {
-    var g = graph.mapVertices((vid, vd) => (false, if (origin == vid) 0 else Double.MaxValue, List[VertexId]()))
+    var g = graph.mapVertices((vid, vd) => (false, if (origin == vid) 0 else Double.PositiveInfinity, List[VertexId]()))
 
     (0L until g.vertices.count()).foreach(i => {
       val currentVertexId = g.vertices.filter(!_._2._1)
@@ -19,14 +20,14 @@ object DijkstrasTrace {
       )
 
       g = g.outerJoinVertices(newDistances)((vid, vd, newSum) => {
-        val newSumVal = newSum.getOrElse((Double.MaxValue, List[VertexId]()))
+        val newSumVal = newSum.getOrElse((Double.PositiveInfinity, List[VertexId]()))
         val trace = if (vd._2 < newSumVal._1) vd._3 else newSumVal._2
         (vd._1 || vid == currentVertexId, math.min(vd._2, newSumVal._1), trace)
       })
     })
 
     graph.outerJoinVertices(g.vertices)((vid, vd, update) => {
-      val updateVal = update.getOrElse(false, Double.MaxValue, List[VertexId]())
+      val updateVal = update.getOrElse(false, Double.PositiveInfinity, List[VertexId]())
       (vd, updateVal._2, updateVal._3)
     })
   }
