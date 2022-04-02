@@ -5,3 +5,4 @@
 - [两跳邻居](/src/main/scala/TwoHopNebrExample.scala)
 - [Dijkstras最短路径](/src/main/scala/GraphXInAction/Chapter06/DijkstrasExample.scala)
 - [旅行推销员 贪心算法](/src/main/scala/GraphXInAction/Chapter06/TravelingSalesmanGreedy.scala)
+- [Kruskal 算法](/src/main/scala/lib/Kruskal.scala)
