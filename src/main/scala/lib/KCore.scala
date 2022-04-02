@@ -25,15 +25,7 @@ object KCore extends Logging {
     g.mapVertices({ case (_, (k, _)) => k })
   }
 
-  def time[R](block: => R): R = {
-    val t0 = System.nanoTime()
-    val result = block // call-by-name
-    val t1 = System.nanoTime()
-    println("Elapsed time: " + (t1 - t0) / 1000000000.0 + " seconds")
-    result
-  }
-
-  def computeCurrentKCore[ED: ClassTag](graph: Graph[(Int, Boolean), ED], k: Int) = {
+  def computeCurrentKCore[ED: ClassTag](graph: Graph[(Int, Boolean), ED], k: Int): Graph[(Int, Boolean), ED] = {
     logWarning(s"Computing kcore for k=$k")
 
     def sendMsg(et: EdgeTriplet[(Int, Boolean), ED]): Iterator[(VertexId, (Int, Boolean))] = {

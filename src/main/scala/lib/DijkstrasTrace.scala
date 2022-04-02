@@ -1,6 +1,6 @@
 package lib
 
-import org.apache.spark.graphx.{Graph, VertexId}
+import org.apache.spark.graphx.{EdgeDirection, Graph, VertexId}
 
 import scala.reflect.ClassTag
 
@@ -29,5 +29,21 @@ object DijkstrasTrace {
       val updateVal = update.getOrElse(false, Double.MaxValue, List[VertexId]())
       (vd, updateVal._2, updateVal._3)
     })
+  }
+
+  def pregelRun[VD: ClassTag](graph: Graph[VD, Double], origin: VertexId): Graph[(Double, List[VertexId]), Double] = {
+
+    val g = graph.mapVertices((vid, vd) => (if (vid == origin) 0.0 else Double.PositiveInfinity, List[VertexId]()))
+
+    g.pregel[(Double, List[VertexId])](initialMsg = (Double.PositiveInfinity, List[VertexId]()), activeDirection = EdgeDirection.Out)(
+      (vid, vd, a) => if (a._1 < vd._1) a else vd,
+      (et) => {
+        val candidate = et.srcAttr._1 + et.attr
+        if (candidate < et.dstAttr._1)
+          Iterator((et.dstId, (candidate, et.srcAttr._2 :+ et.srcId)))
+        else Iterator.empty
+      },
+      (a, b) => if (a._1 < b._1) a else b
+    )
   }
 }
